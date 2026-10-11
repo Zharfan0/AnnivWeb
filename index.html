@@ -541,7 +541,7 @@ h2::after,h1::after{margin-top:var(--s2)}
 
 <audio id="bgm" loop preload="none"></audio><button class="mute" id="bm" hidden aria-label="Musik latar"><svg viewBox="0 0 24 24" width="20" height="20"><path d="M4 9v6h4l5 4V5L8 9z" fill="currentColor"/><path class="wv" d="M16 8c2 2 2 6 0 8M18.5 5.5c4 4 4 9 0 13" stroke="currentColor" fill="none" stroke-width="1.6" stroke-linecap="round"/><path class="stk" d="M3 3l18 18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></button>
 <script>
-const PIN='221026',$=s=>document.querySelector(s),$$=s=>[...document.querySelectorAll(s)];
+const PIN='221025',$=s=>document.querySelector(s),$$=s=>[...document.querySelectorAll(s)];
 let buf='',wrong=0;
 const store={get(k){try{return JSON.parse(localStorage.getItem(k))}catch(e){return null}},set(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}}};
 function go(id){$$('.page').forEach(p=>p.classList.remove('on'));$('#'+id).classList.add('on');window.scrollTo(0,0);document.body.className=id;vis(id);bgSync(id);if(id!=='music'&&id!=='closing')stop();if(id==='closing'){if(cv.src)cv.play().catch(()=>{});openClosing()}else cv.pause()}
