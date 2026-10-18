@@ -694,7 +694,7 @@ function bgSync(id){const show=BGM&&unlocked&&id!=='landing'&&id!=='music';bm.hi
 if(show&&bgOn&&!(id==='closing'&&(playing||monoActive)))tryPlay(bgm);else bgm.pause()}
 bm.onclick=()=>{bgOn=!bgOn;bgSync(document.body.className)};
 // kunci tanggal
-const UNLOCK_AT=new Date('2026-10-18T00:00:00+07:00'),PREVIEW=/[?&]uji(=|&|$)/.test(location.search); // TODO: ubah tanggal buka di sini (WIB); tambahkan ?uji di alamat untuk uji coba
+const UNLOCK_AT=new Date('2026-10-21T00:00:00+07:00'),PREVIEW=/[?&]uji(=|&|$)/.test(location.search); // TODO: ubah tanggal buka di sini (WIB); tambahkan ?uji di alamat untuk uji coba
 let off=0,lt;const nowT=()=>Date.now()+off;
 function openSite(){clearInterval(lt);$('#lock').classList.remove('on');$('#landing').classList.add('on');document.body.className='landing'}
 function lockTick(){const ms=UNLOCK_AT-nowT();if(ms<=0)return openSite();const t=Math.floor(ms/1000),p=n=>String(n).padStart(2,'0');
