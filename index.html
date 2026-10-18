@@ -707,7 +707,9 @@ $('.lk').style.opacity=1;lockTick();lt=setInterval(lockTick,1000)})();
 const CAUDIO='media/Monolog.mp3',ca=$('#ca'),cvp=$('#cvp');let monoActive=false;
 if(CAUDIO)ca.src=CAUDIO;
 function monoSet(st){cvp.dataset.s=st;cvp.setAttribute('aria-label',st==='play'?'Jeda':'Putar')}
-function monoStart(){monoActive=true;stop();bgm.pause();try{ca.currentTime=0}catch(e){}tryPlay(ca);tryPlay(cv);monoSet('play')}
+const CSTART=70; // Monolog mulai dari menit 1:10 (dalam detik)
+function seekMono(){try{ca.currentTime=CSTART}catch(e){}}
+function monoStart(){monoActive=true;stop();bgm.pause();if(ca.readyState>=1)seekMono();else ca.addEventListener('loadedmetadata',seekMono,{once:true});tryPlay(ca);tryPlay(cv);monoSet('play')}
 cvp.onclick=()=>{const st=cvp.dataset.s;if(st==='idle'||st==='again')monoStart();else if(st==='play'){ca.pause();cv.pause();monoSet('pause')}else{tryPlay(ca);tryPlay(cv);monoSet('play')}};
 ca.onended=()=>{monoActive=false;monoSet('again');bgSync('closing')};
 function monoStop(){monoActive=false;ca.pause();try{ca.currentTime=0}catch(e){}cv.pause();monoSet('idle')}
