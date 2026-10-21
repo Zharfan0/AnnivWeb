@@ -460,6 +460,14 @@ h2::after,h1::after{margin-top:var(--s2)}
 .cvp:not([data-s="idle"]){left:auto;top:auto;right:10px;bottom:10px;transform:none;width:42px;height:42px}
 .cvp:not([data-s="idle"]) i{transform:scale(.7)}
 .cvp[data-s="play"] i{width:12px;height:16px;border:0;border-left:4px solid #5a3d2e;border-right:4px solid #5a3d2e;margin:0;transform:none}
+/* ===== kunci surat ===== */
+#m5 .dots{justify-content:center;margin:16px 0}
+#m5 .dots i{border-color:#8a6a52}
+#m5 .dots i.f{background:#b23a48;border-color:#b23a48;box-shadow:none;transform:none}
+#m5 .pad{justify-content:center;margin:0 auto}
+#m5 .pad button{width:58px;height:52px;background:transparent;border:1px solid #c9a98a;color:#4a3428;font:500 1.4rem var(--serif)}
+#m5 .pad button:active{background:#f1e3cc}
+#lmsg{min-height:2em;margin-top:14px;font:italic 500 1.1rem var(--serif);color:#b23a48}
 </style></head><body class="locked">
 
 <section id="lock" class="page on">
@@ -565,6 +573,11 @@ h2::after,h1::after{margin-top:var(--s2)}
 <div class="modal" id="m4"><div class="lb2"><button class="x" id="lbx" aria-label="Tutup foto" style="color:#fff">✕</button><div class="lbimg" id="lbi"></div>
   <div class="lbnav"><button id="lbp" aria-label="Sebelumnya">‹</button><span id="lbc"></span><button id="lbn" aria-label="Berikutnya">›</button></div></div></div>
 <div class="modal" id="m3"><div class="sheet kjs"><div class="kjl">Kejutan kecil</div><p class="kjm">Bulan November 2026 kita main di Surabaya ya cintaku</p><button class="back" data-close>Tutup</button></div></div>
+<div class="modal" id="m5"><div class="sheet kjs"><button class="x" data-close aria-label="Tutup">✕</button>
+  <div class="kjl">Surat ini dikunci</div>
+  <p class="kjm" id="lq">Masukkan 4 angka untuk membuka surat</p>
+  <div class="dots" id="ldots"><i></i><i></i><i></i><i></i></div>
+  <div class="pad" id="lpad"></div><div id="lmsg"></div></div></div>
 
 <audio id="bgm" loop preload="none"></audio><audio id="ca" preload="none"></audio><button class="mute" id="bm" hidden aria-label="Musik latar"><svg viewBox="0 0 24 24" width="20" height="20"><path d="M4 9v6h4l5 4V5L8 9z" fill="currentColor"/><path class="wv" d="M16 8c2 2 2 6 0 8M18.5 5.5c4 4 4 9 0 13" stroke="currentColor" fill="none" stroke-width="1.6" stroke-linecap="round"/><path class="stk" d="M3 3l18 18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></button>
 <script>
@@ -573,7 +586,7 @@ let buf='',wrong=0;
 const store={get(k){try{return JSON.parse(localStorage.getItem(k))}catch(e){return null}},set(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}}};
 function tryPlay(m){try{const p=m.play();if(p&&p.catch)p.catch(()=>{})}catch(e){}}
 function go(id){$$('.page').forEach(p=>p.classList.remove('on'));$('#'+id).classList.add('on');window.scrollTo(0,0);document.body.className=id;vis(id);bgSync(id);if(id!=='music'&&id!=='closing')stop();if(id==='closing'){openClosing()}else{cv.pause();monoStop()}}
-document.addEventListener('click',e=>{const g=e.target.closest('[data-go]');if(g)go(g.dataset.go);if(e.target.closest('[data-close]'))$$('.modal').forEach(m=>m.classList.remove('on'));if(e.target.classList.contains('modal'))e.target.classList.remove('on')});
+document.addEventListener('click',e=>{const g=e.target.closest('[data-go]');if(g){if(g.dataset.go==='letter'&&!letterOk){openLetterLock();return}go(g.dataset.go)}if(e.target.closest('[data-close]'))$$('.modal').forEach(m=>m.classList.remove('on'));if(e.target.classList.contains('modal'))e.target.classList.remove('on')});
 // PIN
 const pad=$('#pad');[1,2,3,4,5,6,7,8,9,'',0,'⌫'].forEach(k=>{const b=document.createElement('button');b.textContent=k;if(k==='')b.style.visibility='hidden';b.onclick=()=>key(k);pad.appendChild(b)});
 function key(k){if(k==='⌫')buf=buf.slice(0,-1);else if(buf.length<6)buf+=k;$$('#dots i').forEach((d,i)=>d.classList.toggle('f',i<buf.length));if(buf.length===6)check()}
@@ -683,7 +696,7 @@ $('#again').onclick=()=>{
 store.set('vis',[]);store.set('gd',[]);seen.length=0;bl.length=0;
 fls.forEach(f=>f.classList.remove('open','pulse'));const hf0=fls[16];if(hf0)hf0.classList.add('pulse');$('#ghint').style.opacity=1;$('#sign').classList.remove('on');upd();$('#fin').classList.remove('on');
 $('#bk').classList.remove('open');show(0);env.classList.remove('open');$('#rd').classList.remove('on');$('#hint').style.opacity=1;
-stop();unlocked=false;refreshHome();
+stop();unlocked=false;letterOk=false;refreshHome();
 buf='';wrong=0;$$('#dots i').forEach(d=>d.classList.remove('f'));$('#msg').textContent='';go('landing')};
 refreshHome();
 // musik latar
@@ -714,4 +727,16 @@ cvp.onclick=()=>{const st=cvp.dataset.s;if(st==='idle'||st==='again')monoStart()
 ca.onended=()=>{monoActive=false;monoSet('again');bgSync('closing')};
 function monoStop(){monoActive=false;ca.pause();try{ca.currentTime=0}catch(e){}cv.pause();monoSet('idle')}
 $('#egg').onclick=()=>$('#m3').classList.add('on');
+// kunci surat
+const LPIN='1706',LHINT='Petunjuk: (isi petunjuk teka-tekinya di sini)';
+let lbuf='',lwrong=0,letterOk=false;
+const lpad=$('#lpad');
+[1,2,3,4,5,6,7,8,9,'',0,'⌫'].forEach(k=>{const b=document.createElement('button');b.textContent=k;if(k==='')b.style.visibility='hidden';b.onclick=()=>lkey(k);lpad.appendChild(b)});
+function lrender(){$$('#ldots i').forEach((d,i)=>d.classList.toggle('f',i<lbuf.length))}
+function openLetterLock(){lbuf='';lwrong=0;lrender();$('#lmsg').textContent='';$('#m5').classList.add('on')}
+function lkey(k){if(k==='⌫')lbuf=lbuf.slice(0,-1);else if(lbuf.length<4)lbuf+=k;lrender();if(lbuf.length===4)lcheck()}
+function lcheck(){
+  if(lbuf===LPIN){letterOk=true;$('#lmsg').textContent='Kebuka 🤍';setTimeout(()=>{$('#m5').classList.remove('on');go('letter')},700)}
+  else{lwrong++;$('#ldots').classList.add('shake');setTimeout(()=>$('#ldots').classList.remove('shake'),400);
+    $('#lmsg').textContent=lwrong>=3?LHINT:'Belum tepat, coba pikirkan lagi 🤔';lbuf='';lrender()}}
 </script></body></html>
